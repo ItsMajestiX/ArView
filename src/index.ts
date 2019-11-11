@@ -1,7 +1,5 @@
-//Import fabric.js
+import { ArNode } from './arnode';
 import { fabric } from 'fabric';
-import { ArNode } from './arnode'
-import { Point } from './point'
 
 //Create a canvass
 let canvasElement = document.createElement('canvas');
@@ -28,18 +26,22 @@ canvas.on('mouse:wheel', function(opt) {
   	zoom = zoom + delta/1000;
   	if (zoom > 20) zoom = 20;
   	if (zoom < 0.01) zoom = 0.01;
-  	canvas.zoomToPoint(new fabric.Point(cast.offsetX, cast.offsetY), zoom);
+	canvas.zoomToPoint(new fabric.Point(cast.offsetX, cast.offsetY), zoom);
   	opt.e.preventDefault();
   	opt.e.stopPropagation();
 });
 
 canvas.on('mouse:down', function(opt) {
 	let cast = opt.e as MouseEvent;
-	var evt = opt.e;
-	this.isDragging = true;
-	this.selection = false;
-	this.lastPosX = cast.clientX;
-	this.lastPosY = cast.clientY;
+	if (opt.target) {
+		
+	}
+	else {
+		this.isDragging = true;
+		this.selection = false;
+		this.lastPosX = cast.clientX;
+		this.lastPosY = cast.clientY;
+	}
 });
 
 canvas.on('mouse:move', function(opt) {
@@ -49,7 +51,12 @@ canvas.on('mouse:move', function(opt) {
 	  	this.viewportTransform[5] += cast.clientY - this.lastPosY;
 	  	this.requestRenderAll();
 	  	this.lastPosX = cast.clientX;
-	  	this.lastPosY = cast.clientY;
+		this.lastPosY = cast.clientY;
+		canvas.renderAll();
+		canvas.getObjects().forEach(element => {
+			console.log(element);
+			element.setCoords();
+		}); 
 	}
 });
 
@@ -59,4 +66,4 @@ canvas.on('mouse:up', function(opt) {
 });
 
 canvas.setBackgroundColor('black', canvas.renderAll.bind(canvas));
-let node = new ArNode(canvas, new Point(0, 0));
+let node = new ArNode(canvas, new fabric.Point(canvas.getCenter().left, canvas.getCenter().top), 1);

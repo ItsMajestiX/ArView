@@ -4,8 +4,8 @@ import { ApiConfig } from '../node_modules/arweave/web/lib/api';
 
 export let defaultConfig = {
 	host: 'arweave.net',
-	port: 1984,
-	protocol: 'http',
+	port: 443,
+	protocol: 'https',
 	timeout: 3000,
 	logging: false
 };

@@ -12,11 +12,11 @@
 	"devDependencies": {
 		"@types/fabric": "^3.4.0",
 		"@types/fontfaceobserver": "0.0.6",
-		"@types/node": "^12.11.7",
+		"@types/node": "^12.12.7",
 		"ts-loader": "^6.2.1",
-		"typescript": "^3.6.4",
+		"typescript": "^3.7.2",
 		"webpack": "^4.20.2",
-		"webpack-cli": "^3.1.2"
+		"webpack-cli": "^3.3.10"
 	},
 	"dependencies": {
 		"arweave": "^1.5.3",
