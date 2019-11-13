@@ -53,10 +53,6 @@ canvas.on('mouse:move', function(opt) {
 	  	this.lastPosX = cast.clientX;
 		this.lastPosY = cast.clientY;
 		canvas.renderAll();
-		canvas.getObjects().forEach(element => {
-			console.log(element);
-			element.setCoords();
-		}); 
 	}
 });
 
@@ -66,4 +62,4 @@ canvas.on('mouse:up', function(opt) {
 });
 
 canvas.setBackgroundColor('black', canvas.renderAll.bind(canvas));
-let node = new ArNode(canvas, new fabric.Point(canvas.getCenter().left, canvas.getCenter().top), 1);
+let node = new ArNode(canvas, new fabric.Point(canvas.getCenter().left, canvas.getCenter().top));

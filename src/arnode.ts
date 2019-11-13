@@ -1,13 +1,11 @@
 import Arweave from '../node_modules/arweave/web/index';
 import { ApiConfig } from '../node_modules/arweave/web/lib/api';
 import { fabric } from 'fabric';
-import { Canvas } from 'fabric/fabric-impl';
 import { defaultConfig } from './arweave'
 import { PeerList } from '../node_modules/arweave/web/network';
 var FontFaceObserver = require('fontfaceobserver');
 
 export class ArNode {
-    scale: number;
     arweave: Arweave;
     canvasObject: fabric.Image;
     ip: string;
@@ -15,23 +13,16 @@ export class ArNode {
     friends: PeerList | undefined;
     children: ArNode[];
     line: fabric.Line;
-    parent: ArNode | ArNode;
+    parent: ArNode;
 
-    constructor(c: fabric.Canvas, pos: fabric.Point, scale: number, config?: ApiConfig | void, s?: fabric.Point, p?: ArNode) {
+    constructor(c: fabric.Canvas, pos: fabric.Point, config?: ApiConfig | void, s?: fabric.Point, p?: ArNode) {
         this.children = [];
-        this.scale = scale;
         if (config) {
             this.ip = config.host;
         }
         else {
             this.ip = defaultConfig.host;
         }
-        this.arweave = Arweave.init(config || defaultConfig);
-        this.arweave.network.getPeers().then((peers) => {
-            this.friends = peers;
-        }, (e) => {
-            console.error(e);
-        });
         fabric.Image.fromURL("../dist/img/arweave.png", (img) => {
             img.selectable = false;
             img.setPositionByOrigin(pos, 'center', 'center');
@@ -45,7 +36,6 @@ export class ArNode {
             this.canvasObject = img;
             if (p) {
                 this.parent = p;
-                console.log(Math.round(Math.random() * 16777215).toString(16));
                 let line = new fabric.Line([s.x, s.y, this.canvasObject.getCenterPoint().x, this.canvasObject.getCenterPoint().y], {
                     "fill": '#' + Math.round(Math.random() * 16777215).toString(16),
                     "stroke": '#' + Math.round(Math.random() * 16777215).toString(16),
@@ -57,9 +47,27 @@ export class ArNode {
                 this.line = line;
             }
         });
+        this.arweave = Arweave.init(config || defaultConfig);
+        this.arweave.network.getPeers().then((peers) => {
+            this.friends = peers;
+        }, (e) => {
+            if (config) {
+                //upgrade
+                config.protocol = 'https';
+                config.port = 443;
+                this.arweave = Arweave.init(config);
+                this.arweave.network.getPeers().then((peers) => {
+                    this.friends = peers;
+                    console.log('https upgrade sucessful')
+                }, (e) => {
+                    console.error(e);
+                    this.destroy.bind(this)();
+                });
+            }
+        });
     }
 
-    onHover(ev: fabric.IEvent) {
+    protected onHover(ev: fabric.IEvent) {
         let text = new fabric.Text(this.ip, {
             'fontFamily': 'Titillium Web',
             'fill': 'white'
@@ -69,32 +77,72 @@ export class ArNode {
         this.textObject = text;
     }
 
-    offHover(ev: fabric.IEvent) {
+    protected offHover(ev: fabric.IEvent) {
         this.textObject.canvas.remove(this.textObject);
         this.textObject = undefined;
     }
 
-    onClick(existingPeers: PeerList): PeerList | undefined {
-        this.children.push(new ArNode(this.canvasObject.canvas, new fabric.Point(this.canvasObject.getCenterPoint().x, this.canvasObject.getCenterPoint().y + 200), 1, undefined, this.canvasObject.getCenterPoint(), this));
-        /*if (this.friends) {
+    public onClick(existingPeers: PeerList): PeerList | undefined {
+        if (this.friends) {
+            if (this.parent) {
+                this.parent.destroyChildren(this);
+            }
             let newPeers:string[] = []
             this.friends.forEach(element => {
                 if (!(element in existingPeers)) {
                     newPeers.push(element);
                 }
             });
-            let points = 0;
+            //should get this working
+            let dist = 0
             newPeers.forEach(element => {
-                points++;
-                let node = new ArNode(this.canvasObject.canvas, new Point(, this.canvasObject.top - this.canvasObject.height), this.scale/2, {
-                    host: element,
-                    port: 443,
-                    protocol: 'https',
-                    timeout: 3000,
+                let info = this.getPort(element);
+                this.children.push(new ArNode(this.canvasObject.canvas, new fabric.Point(this.canvasObject.getCenterPoint().x + dist, this.canvasObject.getCenterPoint().y + 200), {
+                    host: info[0],
+                    port: info[1],
+                    protocol: 'http',
+                    timeout: 10000,
                     logging: false
-                });
+                }, this.canvasObject.getCenterPoint(), this));
+                dist += 200;
             });
-        }*/
+        }
         return undefined;
+    }
+
+    protected getPort(ip: string): any[] {
+        if (ip.search(':') === -1) {
+            return [ip, 1984]
+        }
+        else {
+            return [ip.split(':')[0], ip.split(':')[1]]
+        }
+    }
+
+    public destroyChildren(save: ArNode) {
+        let count = 0
+        this.children.forEach(child => {
+            if (child !== save){
+                child.destroy();
+                delete this.children[count];
+            }
+            count++;
+        });
+        //https://stackoverflow.com/a/281335/10720080
+        this.children.filter(Boolean);
+    }
+
+    public destroy(): void {
+        if (this.children) {
+            this.children.forEach(child => {
+                child.destroy();
+            });
+        }
+        if (this.line) {
+            this.canvasObject.canvas.remove(this.line);
+            delete this.line;
+            this.canvasObject.canvas.remove(this.canvasObject);
+            delete this.canvasObject;
+        }
     }
 }
