@@ -6,6 +6,15 @@ html, body {
     font-size: 48px;
 }
 
+.text {
+    font-size: 24px;
+    color: white;
+    font-family: 'Titillium Web', serif;
+    position: absolute; 
+    z-index: 1;
+    padding: 10px;
+}
+
 /*https://stackoverflow.com/a/22672444/10720080*/
 .button {
     background-color: Transparent;
@@ -14,13 +23,7 @@ html, body {
     cursor: pointer;
     overflow: hidden;
     outline: none;
-}
-
-.text {
-    font-size: 24px;
-    color: white;
-    font-family: 'Titillium Web', serif;
+    padding: 10px;
     position: absolute; 
     z-index: 1;
-    padding: 10px;
 }

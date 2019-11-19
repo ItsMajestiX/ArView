@@ -6,12 +6,15 @@
     <link href="https://fonts.googleapis.com/css?family=Titillium+Web&display=swap" rel="stylesheet">
   </head>
   <body>
-    <span class="text" style="left: 0px; top: 0px;">ArView</span>
-    <button class="button" style="left: 100px; top: 0px;" id="upload">Upload Current View to Blockweave</button>
-    <label style="position: absolute; left: 475px; top: 0px; height: 56.8px; width: 138.54px;" id="label">
-      <span class="text" style="padding: 10px;">Load Wallet</span>
-      <input class="button" type="file" value="Upload to Blockweave" style="opacity: 0; width: 118.54px" id="wallet">
-    </label>
+    <div style="position: absolute; left: 0px; right: 0px; z-index: 1;">
+        <span class="text" style="left: 0px; top: 0px;">ArView</span>
+        <button class="text button" style="left: 102.13px; top: 0px;" id="upload">Upload Current View to Blockweave</button>
+        <label style="left: 448.64px; top: 0px;" id="label">
+          <span class="text" style="left: 478.64px; top: 0px;">Load Wallet</span>
+          <input class="text button" type="file" value="Upload to Blockweave" style="opacity: 0; left: 478.64px; top: 0px; width: 118.54px; height: 36.8px" id="wallet">
+        </label>
+        <button class="text button" style="left: 619.31px; top: 0px;" id="download">Download View</button>
+    </div>
     <script src="bundle.js"></script>
   </body>
 </html>
