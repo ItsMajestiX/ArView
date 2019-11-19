@@ -52,7 +52,7 @@ export class ArNode {
 
     private initImage(pos: fabric.Point, c: fabric.Canvas, p: ArNode, s: fabric.Point): void {
         if (!this.destroyed) {
-            fabric.Image.fromURL("../dist/img/arweave.png", (img) => {
+            fabric.Image.fromURL("img/arweave.png", (img) => {
                 img.selectable = false;
                 img.setPositionByOrigin(pos, 'center', 'center');
                 img.on('mouseover', this.onHover.bind(this));
@@ -78,19 +78,23 @@ export class ArNode {
         }
     }
 
-    protected onHover(ev: fabric.IEvent) {
-        let text = new fabric.Text(this.ip, {
-            'fontFamily': 'Titillium Web',
-            'fill': 'white'
-        });
-        text.setPositionByOrigin(new fabric.Point(this.canvasObject.getCenterPoint().x, this.canvasObject.getCenterPoint().y - 100), 'center', 'center');
-        this.canvasObject.canvas.add(text);
-        this.textObject = text;
+    public onHover(ev: fabric.IEvent) {
+        if (!this.textObject) {
+            let text = new fabric.Text(this.ip, {
+                'fontFamily': 'Titillium Web',
+                'fill': 'white'
+            });
+            text.setPositionByOrigin(new fabric.Point(this.canvasObject.getCenterPoint().x, this.canvasObject.getCenterPoint().y - 100), 'center', 'center');
+            this.canvasObject.canvas.add(text);
+            this.textObject = text;
+        }
     }
 
-    protected offHover(ev: fabric.IEvent) {
-        this.textObject.canvas.remove(this.textObject);
-        this.textObject = undefined;
+    public offHover(ev: fabric.IEvent) {
+        if (this.textObject) {
+            this.textObject.canvas.remove(this.textObject);
+            this.textObject = undefined;
+        }
     }
 
     public onClick(existingPeers: PeerList): PeerList | undefined {
@@ -159,7 +163,7 @@ export class ArNode {
     }
 
     public findObj(obj: fabric.Object): ArNode {
-        if (this.canvasObject === obj) {
+        if (this.canvasObject === obj || this.line === obj || this.textObject === obj) {
             return this;
         }
         if (this.children) {
