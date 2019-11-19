@@ -91,8 +91,20 @@ export function onExport(ev: Event): void {
 }
 
 export function onDownload() {
+    canvas.getObjects().forEach(element => {
+        let targ = node.findObj(element);
+        if (targ) {
+            targ.onHover(null);
+        }
+    });
     downloadURI(canvas.toDataURL({
         format: 'jpeg',
         enableRetinaScaling: true
     }), 'view.jpeg');
+    canvas.getObjects().forEach(element => {
+        let targ = node.findObj(element);
+        if (targ) {
+            targ.offHover(null);
+        }
+    });
 }
