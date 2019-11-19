@@ -59,21 +59,22 @@ export class ArNode {
                 img.on('mouseout', this.offHover.bind(this));
                 //Wait for font to load
                 let font = new FontFaceObserver('Titillium Web');
-                font.load().then(() => {});
-                c.add(img);
-                this.canvasObject = img;
-                if (p) {
-                    this.parent = p;
-                    let line = new fabric.Line([s.x, s.y, this.canvasObject.getCenterPoint().x, this.canvasObject.getCenterPoint().y], {
-                        "fill": '#' + Math.round(Math.random() * 16777215).toString(16),
-                        "stroke": '#' + Math.round(Math.random() * 16777215).toString(16),
-                        "strokeWidth": 5,
-                        "selectable": false
-                    });
-                    this.canvasObject.canvas.add(line);
-                    line.sendToBack();
-                    this.line = line;
-                }
+                font.load().then(() => {
+                    c.add(img);
+                    this.canvasObject = img;
+                    if (p) {
+                        this.parent = p;
+                        let line = new fabric.Line([s.x, s.y, this.canvasObject.getCenterPoint().x, this.canvasObject.getCenterPoint().y], {
+                            "fill": '#' + Math.round(Math.random() * 16777215).toString(16),
+                            "stroke": '#' + Math.round(Math.random() * 16777215).toString(16),
+                            "strokeWidth": 5,
+                            "selectable": false
+                        });
+                        this.canvasObject.canvas.add(line);
+                        line.sendToBack();
+                        this.line = line;
+                    }
+                });
             });
         }
     }
@@ -143,7 +144,7 @@ export class ArNode {
                 child.destroy();
                 delete this.children[count];
             }
-            count++;
+            count++
         });
         //https://stackoverflow.com/a/281335/10720080
         this.children.filter(Boolean);

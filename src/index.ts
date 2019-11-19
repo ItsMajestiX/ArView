@@ -1,6 +1,6 @@
 import { ArNode } from './arnode';
 import { fabric } from 'fabric';
-import { onExport } from './menu';
+import { onExport, onDownload } from './menu';
 
 let arButton = document.getElementById('upload');
 arButton.onclick = onExport;
@@ -12,6 +12,9 @@ document.body.appendChild(canvasElement);
 
 export let canvas = new fabric.Canvas('canvas');
 canvas.selection = false;
+
+let downloadButton = document.getElementById('download')
+downloadButton.onclick = onDownload;
 
 //https://stackoverflow.com/a/3078427/10720080
 function resizeHandler(ev?: UIEvent) {
@@ -63,9 +66,6 @@ export let node = new ArNode(canvas, new fabric.Point(canvas.getCenter().left, c
 let peers:string[] = [];
 
 canvas.on('mouse:down', function (opt: fabric.IEvent) {
-	console.log(canvas.toDataURL({
-		format: 'png',
-	}));
 	let cast = opt.e as MouseEvent;
 	let target = opt.target;
 	if (opt.target) {

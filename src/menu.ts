@@ -4,6 +4,16 @@ import { defaultConfig } from './arweave';
 import { JWKInterface } from '../node_modules/arweave/web/lib/wallet';
 import Transaction from '../node_modules/arweave/web/lib/transaction';
 
+//https://stackoverflow.com/a/15832662/10720080
+function downloadURI(uri: string, name: string) {
+    let link = document.createElement("a");
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
 //https://stackoverflow.com/a/40718205/10720080
 function isJWK(pet: JWKInterface): pet is JWKInterface {
     //Uncommon name
@@ -17,7 +27,7 @@ async function createConfirmMessage(data: Transaction, ar: Arweave, key: JWKInte
     + data.reward + " winston/" 
     + ar.ar.winstonToAr(data.reward) +  " AR. Your current account balance is "
     + bal + " winston/"
-    + ar.ar.winstonToAr(bal) + " AR. Proceed?"
+    + ar.ar.winstonToAr(bal) + " AR. Proceed?";
 }
 
 export function onExport(ev: Event): void {
@@ -29,14 +39,14 @@ export function onExport(ev: Event): void {
     else {
         let reader = new FileReader();
         if (!(selector.files[0].type === "application/json")) {
-            alert("That is not a JSON file. Please try again.")
+            alert("That is not a JSON file. Please try again.");
         }
         reader.onerror = (ev: ProgressEvent<FileReader>) => {
             alert("Wallet loading failed. Please try again.");
         };
         reader.onload = async (ev: ProgressEvent<FileReader>) => {
             try {
-                let key = JSON.parse(ev.target.result as string)
+                let key = JSON.parse(ev.target.result as string);
                 if (isJWK(key)) {
                     let arweave = Arweave.init(defaultConfig);
                     canvas.getObjects().forEach(element => {
@@ -45,10 +55,6 @@ export function onExport(ev: Event): void {
                             targ.onHover(null);
                         }
                     });
-                    console.log(canvas.toDataURL({
-                        format: 'jpeg',
-                        enableRetinaScaling: true
-                    }));
                     let data = await arweave.createTransaction({
                         data: new Buffer(canvas.toDataURL({
                             format: 'jpeg',
@@ -65,7 +71,7 @@ export function onExport(ev: Event): void {
                     data.addTag('data', 'arview-redirect');
                     if (confirm(await createConfirmMessage(data, arweave, key))) {
                         await arweave.transactions.sign(data, key);
-                        let response = await arweave.transactions.post(data)
+                        let response = await arweave.transactions.post(data);
                         if (response.status === 200) {
                             alert("Transaction successful. Transaction ID: " + data.id);
                             window.location.href = "https://arweave.net/" + data.id;
@@ -82,4 +88,11 @@ export function onExport(ev: Event): void {
         };
         reader.readAsText(selector.files[0]);
     }
+}
+
+export function onDownload() {
+    downloadURI(canvas.toDataURL({
+        format: 'jpeg',
+        enableRetinaScaling: true
+    }), 'view.jpeg');
 }
