@@ -97,6 +97,7 @@ export function onDownload() {
             targ.onHover(null);
         }
     });
+    canvas.renderAll();
     downloadURI(canvas.toDataURL({
         format: 'jpeg',
         enableRetinaScaling: true
@@ -107,4 +108,5 @@ export function onDownload() {
             targ.offHover(null);
         }
     });
+    canvas.renderAll();
 }
