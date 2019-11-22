@@ -1,11 +1,7 @@
-# ArView
-Tool to see nodes on arweave network built on fabric.js.
-
-Made for [arweave hackathon](https://gitcoin.co/issue/ArweaveTeam/Bounties/1/3184).
-
+# ArViewWeb
+This is the app that is published to ArWeave.
 # Building
 No extra steps needed:
-
 
 ```
 git clone https://github.com/ItsMajestiX/ArView.git
