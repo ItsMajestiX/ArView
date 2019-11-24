@@ -12,7 +12,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>a6a7413e-5f9e-45c6-9d4b-541c10c5202d</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>lib\app.js</StartupFile>
+    <StartupFile>bin\cmd.js</StartupFile>
     <StartWebBrowser>False</StartWebBrowser>
     <SearchPath>
     </SearchPath>
@@ -30,20 +30,27 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="lib\app.js" />
-    <Content Include="lib\app.js.map" />
+    <Content Include="bin\cmd.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\" />
-    <Folder Include="lib\" />
     <Folder Include="src\" />
+    <Folder Include="src\types\" />
+    <Folder Include="src\types\range_check\" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="lib\app.d.ts" />
     <TypeScriptCompile Include="src\app.ts" />
+    <TypeScriptCompile Include="src\nodegraph.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\types\range_check\index.d.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
   <ProjectExtensions>

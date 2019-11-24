@@ -2,7 +2,7 @@
   "name": "arview-server",
   "version": "0.0.0",
   "description": "An app to collect node data and upload it to Arweave.",
-  "main": "app.js",
+  "main": "lib/app.js",
   "author": {
     "name": "ItsMajestiX"
   },
@@ -15,6 +15,11 @@
     "typescript": "^3.2.2"
   },
   "dependencies": {
-    "arweave": "^1.6.0"
+    "arweave": "^1.6.0",
+    "range_check": "^1.4.0"
+  },
+  "preferGlobal": true,
+  "bin": {
+    "arview-server": "./bin/cmd.js"
   }
 }
