@@ -1,4 +1,4 @@
-import { canvas, node } from './index';
+import { canvas, node, version } from './index';
 import Arweave from '../node_modules/arweave/web/index';
 import { defaultConfig } from './arweave';
 import { JWKInterface } from '../node_modules/arweave/web/lib/wallet';
@@ -68,7 +68,7 @@ export function onExport(ev: Event): void {
                         }
                     });
                     data.addTag('Content-Type', 'image/jpeg');
-                    data.addTag('data', 'arview-redirect');
+                    data.addTag('User-Agent', 'ArView/' + version);
                     if (confirm(await createConfirmMessage(data, arweave, key))) {
                         await arweave.transactions.sign(data, key);
                         let response = await arweave.transactions.post(data);

@@ -2,6 +2,8 @@ import { ArNode } from './arnode';
 import { fabric } from 'fabric';
 import { onExport, onDownload } from './menu';
 
+export let version = '1.0.1';
+
 let arButton = document.getElementById('upload');
 arButton.onclick = onExport;
 
