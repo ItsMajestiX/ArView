@@ -40,15 +40,13 @@
   <ItemGroup>
     <Folder Include="bin\" />
     <Folder Include="src\" />
-    <Folder Include="src\types\" />
-    <Folder Include="src\types\range_check\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\app.ts" />
     <TypeScriptCompile Include="src\nodegraph.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\types\range_check\index.d.ts">
+    <TypeScriptCompile Include="src\args.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
   </ItemGroup>

@@ -23,32 +23,21 @@ class NodeGraph {
         this.badHosts = [];
         this.fail = 0;
     }
-    create(ip) {
+    create(ip, protocol) {
         return __awaiter(this, void 0, void 0, function* () {
             let data = [];
             let arweave = undefined;
-            if (!ip) {
-                arweave = node_1.default.init({
-                    host: 'arweave.net',
-                    port: '443',
-                    protocol: 'https'
-                });
-                this.passedNodes.push('arweave.net:443');
+            if (!this.checkReserved(ip) && !this.checkDupe(ip)) {
+                this.passedNodes.push(ip);
                 console.log(this.passedNodes.length + " nodes searched.");
-            }
-            else {
-                if (!this.checkReserved(ip) && !this.checkDupe(ip)) {
-                    this.passedNodes.push(ip);
-                    console.log(this.passedNodes.length + " nodes searched.");
-                    data = this.getPort(ip);
-                    if (!this.checkHost(data[0])) {
-                        arweave = node_1.default.init({
-                            host: data[0],
-                            port: data[1],
-                            protocol: 'http',
-                            timeout: 3000
-                        });
-                    }
+                data = this.getPort(ip);
+                if (!this.checkHost(data[0])) {
+                    arweave = node_1.default.init({
+                        host: data[0],
+                        port: data[1],
+                        protocol: protocol,
+                        timeout: 3000
+                    });
                 }
             }
             if (arweave) {
@@ -67,27 +56,18 @@ class NodeGraph {
                     });
                 }));
                 if (peers) {
-                    if (ip) {
-                        peers = peers.filter(((e) => {
-                            let data = this.getPort(e);
-                            return !this.checkReserved(data[0]);
-                        }).bind(this));
-                        this.graph[ip] = peers;
-                    }
-                    else {
-                        peers = peers.filter(((e) => {
-                            let data = this.getPort(e);
-                            return !this.checkReserved(data[0]);
-                        }).bind(this));
-                        this.graph['arweave.net:443'] = peers;
-                    }
+                    peers = peers.filter(((e) => {
+                        let data = this.getPort(e);
+                        return !this.checkReserved(data[0]);
+                    }).bind(this));
+                    this.graph[ip] = peers;
                     yield this.asyncForEach(peers, (e) => __awaiter(this, void 0, void 0, function* () {
-                        yield this.create(e);
+                        yield this.create(e, 'http');
                     }));
                 }
             }
             if (!ip) {
-                this.elapsed = this.creationTime - Date.now();
+                this.elapsed = Date.now() - this.creationTime;
             }
         });
     }

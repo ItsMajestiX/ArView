@@ -13,31 +13,20 @@ export class NodeGraph {
     private badHosts: string[] = [];
     private fail = 0;
 
-    public async create(ip?: string) {
+    public async create(ip: string, protocol: string) {
         let data:string[] = [];
         let arweave: Arweave = undefined; 
-        if (!ip) {
-            arweave = Arweave.init({
-                host: 'arweave.net',
-                port: '443',
-                protocol: 'https'
-            });
-            this.passedNodes.push('arweave.net:443');
+        if (!this.checkReserved(ip) && !this.checkDupe(ip)) {
+            this.passedNodes.push(ip);
             console.log(this.passedNodes.length + " nodes searched.");
-        }
-        else {
-            if (!this.checkReserved(ip) && !this.checkDupe(ip)) {
-                this.passedNodes.push(ip);
-                console.log(this.passedNodes.length + " nodes searched.");
-                data = this.getPort(ip);
-                if (!this.checkHost(data[0])) {
-                    arweave = Arweave.init({
-                        host: data[0],
-                        port: data[1],
-                        protocol: 'http',
-                        timeout: 3000
-                    });
-                }
+            data = this.getPort(ip);
+            if (!this.checkHost(data[0])) {
+                arweave = Arweave.init({
+                    host: data[0],
+                    port: data[1],
+                    protocol: protocol,
+                    timeout: 3000
+                });
             }
         }
         if (arweave) {
@@ -56,22 +45,13 @@ export class NodeGraph {
                 });
             });
             if (peers) {
-                if (ip) {
-                    peers = peers.filter(((e) => {
-                        let data = this.getPort(e);
-                        return !this.checkReserved(data[0])
-                    }).bind(this));
-                    this.graph[ip] = peers;
-                }
-                else {
-                    peers = peers.filter(((e) => {
-                        let data = this.getPort(e);
-                        return !this.checkReserved(data[0])
-                    }).bind(this));
-                    this.graph['arweave.net:443'] = peers;
-                }
+                peers = peers.filter(((e) => {
+                    let data = this.getPort(e);
+                    return !this.checkReserved(data[0])
+                }).bind(this));
+                this.graph[ip] = peers;
                 await this.asyncForEach(peers, async (e) => {
-                    await this.create(e);
+                    await this.create(e, 'http');
                 });
             }
         }

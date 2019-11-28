@@ -12,11 +12,14 @@
   },
   "devDependencies": {
     "@types/node": "^8.0.14",
+    "@types/range_check": "^1.4.0",
+    "@types/yargs": "^13.0.3",
     "typescript": "^3.2.2"
   },
   "dependencies": {
     "arweave": "^1.6.0",
-    "range_check": "^1.4.0"
+    "range_check": "^1.4.0",
+    "yargs": "^15.0.2"
   },
   "preferGlobal": true,
   "bin": {

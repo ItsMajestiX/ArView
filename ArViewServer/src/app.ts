@@ -1,17 +1,32 @@
-import Arweave = require('arweave/node');
+import { argv } from './args';
+import fs = require('fs');
 import { NodeGraph } from './nodegraph';
-import rangeCheck = require('range_check');
-import fs = require("fs");
 
-function foo(a: string[]) {
-    a.push('a');
+//https://stackoverflow.com/a/49957219/10720080
+async function sleep(millis) {
+    return new Promise(resolve => setTimeout(resolve, millis));
 }
 
 export async function app() {
-    let nodeGraph = new NodeGraph();
-    await nodeGraph.create();
-    fs.writeFile('data.json', JSON.stringify(nodeGraph), () => { });
-    console.log(JSON.stringify(nodeGraph));
+    if (!fs.existsSync(argv.s)) {
+        fs.mkdirSync(argv.s);
+    }
+    while (true) {
+        let graph = new NodeGraph()
+        await graph.create(argv.i + ':' + argv.p, argv.h);
+        let found = false;
+        let fileID = 0;
+        while (!found) {
+            if (fs.existsSync(argv.s + '/' + 'graph' + fileID + '.json')) {
+                fileID += 1;
+            }
+            else {
+                found = true;
+            }
+        }
+        fs.writeFileSync(argv.s + '/' + 'graph' + fileID + '.json', JSON.stringify(graph));
+        await sleep(argv.d * 1000);
+    }
 }
 
 app();
