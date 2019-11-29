@@ -1,11 +1,12 @@
 import yargs from 'yargs';
 
+//CLI arguments
 export let argv = yargs
     .usage('Usage: arview-server [options]')
     .alias('b', 'min_bal')
     .nargs('b', 1)
-    .describe('b', 'Minimum balance of wallet to send graph.')
-    .default('b', 0.015)
+    .describe('b', 'Minimum balance of wallet to send graph in winston.')
+    .default('b', 15000000000)
     .alias('d', 'delay')
     .nargs('d', 1)
     .describe('d', 'Time to wait in seconds before creating a new graph.')
@@ -21,8 +22,12 @@ export let argv = yargs
     .alias('h', 'protocol')
     .nargs('h', 1)
     .describe('h', 'Protocol of node to start graph from.')
-    .default('h', 'https')
     .choices('h', ['http', 'https'])
+    .default('h', 'https')
+    .alias('ig', 'ip_gateway')
+    .nargs('ig', 1)
+    .describe('ig', 'IP of gateway to use.')
+    .default('ig', 'arweave.net')
     .alias('k', 'key')
     .nargs('k', 1)
     .describe('k', 'Path to key file.')
@@ -35,14 +40,8 @@ export let argv = yargs
     .nargs('r', 1)
     .describe('r', 'Seconds to wait before checking balance again.')
     .default('r', 30)
-    .options({
-        b: { type: 'number' },
-        d: { type: 'number' },
-        i: { type: 'string' },
-        p: { type: 'number' },
-        h: { choices: ['http', 'https'] },
-        k: { type: 'string' },
-        s: { type: 'string' },
-        r: { type: 'number' }
-    })
-    .argv
+    .alias('m', 'max')
+    .nargs('m', 1)
+    .describe('m', 'Maximum number of graphs to send. Set to 0 for no limit.')
+    .default('m', 0)
+    .argv;
