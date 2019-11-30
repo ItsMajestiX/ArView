@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const args_1 = require("./args");
 const fs = require("fs");
-const nodegraph_1 = require("./nodegraph");
 const Arweave = require("arweave/node");
 const path = require("path");
 const arweave_1 = require("./arweave");
@@ -27,7 +26,8 @@ function app() {
             host: args_1.argv.ig,
             port: 443,
             protocol: 'https',
-            timeout: 3000
+            timeout: args_1.argv.tg,
+            logging: true
         });
         //Test gateway connection
         yield arweave.network.getInfo().catch((e) => {
@@ -61,35 +61,37 @@ function app() {
         //Main loop
         let count = 0;
         while (args_1.argv.m === 0 || count < args_1.argv.m) {
+            /*
             count += 1;
             let paid = false;
-            console.log("Waiting for payment...");
+            console.log("Waiting for payment...")
             while (!paid) {
-                if (parseInt(yield arweave.wallets.getBalance(yield arweave.wallets.jwkToAddress(key)), 10) >= args_1.argv.b) {
+                if (parseInt(await arweave.wallets.getBalance(await arweave.wallets.jwkToAddress(key)), 10) >= argv.b) {
                     paid = true;
                 }
                 else {
-                    yield sleep(args_1.argv.r * 1000);
+                    await sleep(argv.r * 1000);
                 }
             }
-            console.log("Payment acquired.");
+            console.log("Payment acquired.")
             //Create a new graph
-            let graph = new nodegraph_1.NodeGraph();
-            yield graph.create(args_1.argv.i + ':' + args_1.argv.p, args_1.argv.h);
+            let graph = new NodeGraph()
+            await graph.create(argv.i + ':' + argv.p, argv.h, argv.t);
             //Write to disk
             let found = false;
             let fileID = 0;
             while (!found) {
-                if (fs.existsSync(args_1.argv.s + '/' + 'graph' + fileID + '.json')) {
+                if (fs.existsSync(argv.s + '/' + 'graph' + fileID + '.json')) {
                     fileID += 1;
                 }
                 else {
                     found = true;
                 }
             }
-            let stringGraph = JSON.stringify(graph);
-            fs.writeFileSync(args_1.argv.s + '/' + 'graph' + fileID + '.json', stringGraph);
-            yield arweave_1.sendGraph(stringGraph, arweave, key);
+            let stringGraph = JSON.stringify(graph)
+            fs.writeFileSync(argv.s + '/' + 'graph' + fileID + '.json', stringGraph);
+            */
+            yield arweave_1.sendGraph(fs.readFileSync('graphs/graph0.json').toString(), arweave, key);
             //Sleep
             yield sleep(args_1.argv.d * 1000);
         }

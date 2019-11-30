@@ -13,7 +13,7 @@ export class NodeGraph {
     private badHosts: string[] = [];
     private fail = 0;
 
-    public async create(ip: string, protocol: string) {
+    public async create(ip: string, protocol: string, timeout: number) {
         let data:string[] = [];
         let arweave: Arweave = undefined; 
         //Make sure this node is valid.
@@ -26,7 +26,7 @@ export class NodeGraph {
                     host: data[0],
                     port: data[1],
                     protocol: protocol,
-                    timeout: 3000
+                    timeout: timeout
                 });
             }
         }
@@ -39,7 +39,7 @@ export class NodeGraph {
                     host: data[0],
                     port: data[1],
                     protocol: 'https',
-                    timeout: 3000
+                    timeout: timeout
                 });
                 peers = await arweave.network.getPeers().catch((e) => {
                     this.badHosts.push(data[0]);
@@ -56,7 +56,7 @@ export class NodeGraph {
                 this.graph[ip] = peers;
                 //Repeat for peers
                 await this.asyncForEach(peers, async (e) => {
-                    await this.create(e, 'http');
+                    await this.create(e, 'http', timeout);
                 });
             }
         }

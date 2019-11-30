@@ -16,7 +16,8 @@ export async function app() {
         host: argv.ig,
         port: 443,
         protocol: 'https',
-        timeout: 3000
+        timeout: argv.tg,
+        logging: true
     });
     //Test gateway connection
     await arweave.network.getInfo().catch((e) => {
@@ -64,7 +65,7 @@ export async function app() {
         console.log("Payment acquired.")
         //Create a new graph
         let graph = new NodeGraph()
-        await graph.create(argv.i + ':' + argv.p, argv.h);
+        await graph.create(argv.i + ':' + argv.p, argv.h, argv.t);
         //Write to disk
         let found = false;
         let fileID = 0;

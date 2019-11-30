@@ -22,7 +22,7 @@ class NodeGraph {
         this.badHosts = [];
         this.fail = 0;
     }
-    create(ip, protocol) {
+    create(ip, protocol, timeout) {
         return __awaiter(this, void 0, void 0, function* () {
             let data = [];
             let arweave = undefined;
@@ -36,7 +36,7 @@ class NodeGraph {
                         host: data[0],
                         port: data[1],
                         protocol: protocol,
-                        timeout: 3000
+                        timeout: timeout
                     });
                 }
             }
@@ -49,7 +49,7 @@ class NodeGraph {
                         host: data[0],
                         port: data[1],
                         protocol: 'https',
-                        timeout: 3000
+                        timeout: timeout
                     });
                     peers = yield arweave.network.getPeers().catch((e) => {
                         this.badHosts.push(data[0]);
@@ -66,7 +66,7 @@ class NodeGraph {
                     this.graph[ip] = peers;
                     //Repeat for peers
                     yield this.asyncForEach(peers, (e) => __awaiter(this, void 0, void 0, function* () {
-                        yield this.create(e, 'http');
+                        yield this.create(e, 'http', timeout);
                     }));
                 }
             }
