@@ -357,3 +357,5 @@ MigrationBackup/
 
 ArViewServer/lib/*.ts
 ArViewServer/lib/*.js.map
+ArViewWeb/dist/cert.pem
+ArViewWeb/dist/key.pem

@@ -52,7 +52,13 @@
     <TypeScriptCompile Include="src\arnode.ts" />
     <TypeScriptCompile Include="src\arweave.ts" />
     <TypeScriptCompile Include="src\index.ts" />
-    <TypeScriptCompile Include="src\menu.ts" />
+    <TypeScriptCompile Include="src\downloads.ts" />
+    <TypeScriptCompile Include="src\nodegraph.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\menu.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
   <ProjectExtensions>

@@ -1,12 +1,11 @@
-import Arweave from '../node_modules/arweave/web/index';
 import { ApiConfig } from '../node_modules/arweave/web/lib/api';
 import { fabric } from 'fabric';
-import { defaultConfig } from './arweave';
+import { defaultConfig, GraphGetter } from './arweave';
 import { PeerList } from '../node_modules/arweave/web/network';
+import { graph } from './index';
 var FontFaceObserver = require('fontfaceobserver');
 
 export class ArNode {
-    arweave: Arweave;
     canvasObject: fabric.Image;
     ip: string;
     textObject: fabric.Text;
@@ -16,38 +15,20 @@ export class ArNode {
     line: fabric.Line;
     parent: ArNode;
     destroyed: boolean;
+    config: ApiConfig;
 
     constructor(c: fabric.Canvas, pos: fabric.Point, config?: ApiConfig | void, s?: fabric.Point, p?: ArNode) {
         this.exclusiveFriends = [];
         this.children = [];
         this.friends = [];
-        if (config) {
-            this.ip = config.host;
+        if (!config) {
+            config = defaultConfig;
         }
-        else {
-            this.ip = defaultConfig.host;
-        }
-        this.arweave = Arweave.init(config || defaultConfig);
-        this.arweave.network.getPeers().then((peers) => {
-            this.friends = peers;
-            this.initImage(pos, c, p, s);
-        }, (e) => {
-            if (config) {
-                //upgrade
-                config.protocol = 'https';
-                if (config.port === 1984) {
-                    config.port = 443;
-                }
-                this.arweave = Arweave.init(config);
-                this.arweave.network.getPeers().then((peers) => {
-                    this.friends = peers;
-                    this.initImage(pos, c, p, s);
-                }, (e) => {
-                    console.error(e);
-                    this.destroy.bind(this)();
-                });
-            }
-        });
+        this.config = config;
+        this.ip = config.host + ':' + config.port;
+        let peers = graph.getPeers(config.host + ':' + config.port);
+        this.friends = peers;
+        this.initImage(pos, c, p, s);
     }
 
     private initImage(pos: fabric.Point, c: fabric.Canvas, p: ArNode, s: fabric.Point): void {
@@ -98,13 +79,14 @@ export class ArNode {
         }
     }
 
-    public onClick(existingPeers: PeerList): PeerList | undefined {
+    public onClick() {
         if (this.friends) {
             if (this.parent) {
                 this.parent.destroyChildren(this);
             }
             if (this.exclusiveFriends.length === 0) {
                 this.friends.forEach(element => {
+                    let existingPeers = this.getUsed();
                     if (!(existingPeers.includes(element))) {
                         this.exclusiveFriends.push(element);
                     }
@@ -177,5 +159,13 @@ export class ArNode {
             });
             return found;
         }
+    }
+
+    public getUsed(list: string[] = []): string[] {
+        if (this.parent) {
+            list = this.parent.getUsed();
+        }
+        list.push(this.config.host + ':' + this.config.port);
+        return list;
     }
 }
