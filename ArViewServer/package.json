@@ -6,7 +6,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ItsMajestiX/ArView.git"
-  }
+  },
   "main": "lib/app.js",
   "author": {
     "name": "ItsMajestiX"
