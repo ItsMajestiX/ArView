@@ -1,7 +1,13 @@
 {
   "name": "arview-server",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "An app to collect node data and upload it to Arweave.",
+  "homepage": "https://github.com/ItsMajestiX/ArView/tree/master/ArViewServer",
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ItsMajestiX/ArView.git"
+  },
   "main": "lib/app.js",
   "author": {
     "name": "ItsMajestiX"
